@@ -1,0 +1,6 @@
+[flake8]
+exclude = .git,*migrations*
+max-line-length = 119
+ignore=E265,E261,E262,E302,E305,E231,E303,E501,E402,E221
+
+format = ${cyan}%(path)s${reset}:${yellow_bold}%(row)d${reset}:${green_bold}%(col)d${reset}: ${red_bold}%(code)s${reset} %(text)s
