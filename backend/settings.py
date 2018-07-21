@@ -8,7 +8,7 @@ VERSION = "0.0.4"
 SECRET_KEY = '+^&h3f(g%*@j!b@i2dc9yd&jzwg9cw(xnw$j&@n+hay(fh)eoc'
 DEBUG = True
 
-ALLOWED_HOSTS = ['pilas-engine-backend.hugoruscitti.com.ar', '127.0.0.4', 'localhost']
+ALLOWED_HOSTS = ['pilas-engine-backend.hugoruscitti.com.ar', 'backend.pilas-engine.com.ar', '127.0.0.4', 'localhost']
 
 JSON_API_FORMAT_KEYS = 'dasherize'
 JSON_API_FORMAT_RELATION_KEYS = 'dasherize'
