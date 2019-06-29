@@ -8,7 +8,13 @@ VERSION = "0.0.6"
 SECRET_KEY = '+^&h3f(g%*@j!b@i2dc9yd&jzwg9cw(xnw$j&@n+hay(fh)eoc'
 DEBUG = True
 
-ALLOWED_HOSTS = ['pilas-engine-backend.hugoruscitti.com.ar', 'backend.pilas-engine.com.ar', '127.0.0.4', 'localhost']
+ALLOWED_HOSTS = [
+    'pilas-engine-backend.hugoruscitti.com.ar',
+    'backend.pilas-engine.com.ar',
+    '127.0.0.4',
+    'localhost',
+    '127.0.0.1',
+]
 
 JSON_API_FORMAT_KEYS = 'dasherize'
 JSON_API_FORMAT_RELATION_KEYS = 'dasherize'
@@ -45,7 +51,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["pilas/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
