@@ -5,7 +5,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSION = "0.0.8"
 
 SECRET_KEY = '+^&h3f(g%*@j!b@i2dc9yd&jzwg9cw(xnw$j&@n+hay(fh)eoc'
-DEBUG = True
+
+if os.environ.get("DEBUG", ""):
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = [
     'pilas-engine-backend.hugoruscitti.com.ar',
