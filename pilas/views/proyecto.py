@@ -58,10 +58,12 @@ def subir(request):
     )
 
     baseurl = os.environ.get('BACKEND_URL')
+    frontendurl = os.environ.get('FRONTEND_URL')
 
     return JsonResponse({
         "ok": True,
-        "url": os.path.join(baseurl, "proyecto", str(proyecto.hash)),
+        "url_test": os.path.join(baseurl, "proyecto", str(proyecto.hash)),
+        "url": os.path.join(frontendurl, "#", "proyecto", str(proyecto.hash)),
         "hash": proyecto.hash,
         "error": ""
     })
