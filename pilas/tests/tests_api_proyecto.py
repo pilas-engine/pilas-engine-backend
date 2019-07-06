@@ -1,9 +1,20 @@
 from rest_framework.test import APITestCase
-from pilas.tests.utilidades import autenticar
+
 
 class APIProyectoTests(APITestCase):
 
-    def test_puede_listar_los_proyectos(self):
-        autenticar(self.client)
-        response = self.client.get('/api/proyectos')
-        self.assertEqual(len(response.data['results']), 0)
+    def test_puede_subir_un_proyecto(self):
+        data = {
+            "codigo": "demo {}",
+            "codigo_serializado": "ASDASD",
+        }
+
+        response = self.client.post("/proyecto/subir", data, format="json")
+        self.assertEqual(response.json()["ok"], True)
+        self.assertTrue(response.json()["hash"])
+
+    def test_obtiene_un_error_al_subir_un_proyecto_incompleto(self):
+        data = {}
+        response = self.client.post("/proyecto/subir", data, format="json")
+        self.assertEqual(response.json()["ok"], False)
+        self.assertEqual(response.json()["error"], "Faltan parámetros")

@@ -17,16 +17,17 @@ comandos:
 	@echo ""
 	@echo "  ${Y}Para desarrolladores${N}"
 	@echo ""
-	@echo "    ${G}iniciar${N}                            Instala todas las dependencias."
-	@echo "    ${G}crear_migraciones${N}                  Genera las migraciones."
-	@echo "    ${G}migrar${N}                             Ejecuta las migraciones."
-	@echo "    ${G}test${N}                               Ejecuta los tests."
-	@echo "    ${G}test_live${N}                          Ejecuta los tests de forma continua."
-	@echo "    ${G}ejecutar${N}                           Ejecuta el servidor en modo desarrollo."
-	@echo "    ${G}test_server${N}                        Ejecuta el servidor en modo test."
-	@echo "    ${G}shell${N}                              Ejecuta un intérprete de python."
-	@echo "    ${G}version${N}                            Incrementa la versión."
-	@echo "    ${G}realizar_backup_desde_produccion${N}   Incrementa la versión."
+	@echo "    ${G}iniciar${N}                   Instala todas las dependencias."
+	@echo "    ${G}crear_migraciones${N}         Genera las migraciones."
+	@echo "    ${G}migrar${N}                    Ejecuta las migraciones."
+	@echo "    ${G}actualizar_pilas${N}          Actualiza pilas desde un directorio externo."
+	@echo "    ${G}test${N}                      Ejecuta los tests."
+	@echo "    ${G}test_live${N}                 Ejecuta los tests de forma continua."
+	@echo "    ${G}ejecutar${N}                  Ejecuta el servidor en modo desarrollo."
+	@echo "    ${G}test_server${N}               Ejecuta el servidor en modo test."
+	@echo "    ${G}shell${N}                     Ejecuta un intérprete de python."
+	@echo "    ${G}version${N}                   Incrementa la versión."
+	@echo "    ${G}realizar_backup_desde_produccion${N}   "
 	@echo ""
 	@echo ""
 
@@ -54,7 +55,6 @@ test_live:
 ejecutar:
 	@pipenv run python manage.py runserver
 
-
 testserver:
 	@pipenv run python manage.py testserver fixture.json
 
@@ -66,6 +66,20 @@ version:
 	@git push
 	@git push --tags
 
+actualizar_pilas:
+	@cp ../pilas-engine/public/pilas-engine.js static/
+	@cp ../pilas-engine/public/imagenes-0.png static/
+	@cp ../pilas-engine/public/imagenes.json static/
+	@cp ../pilas-engine/public/ceferino.json static/
+	@cp ../pilas-engine/public/ceferino.png static/
+	@cp ../pilas-engine/public/ceferino.scon static/
+	@cp ../pilas-engine/public/nineslice.js static/
+	@cp ../pilas-engine/public/phaser.js static/
+	@cp ../pilas-engine/public/robot.json static/
+	@cp ../pilas-engine/public/robot.png static/
+	@cp ../pilas-engine/public/robot.scon static/
+	@cp -r ../pilas-engine/public/fuentes static/
+	@cp -r ../pilas-engine/public/sonidos static/
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"

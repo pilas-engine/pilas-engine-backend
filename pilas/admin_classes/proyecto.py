@@ -1,7 +1,14 @@
+import os
 from django.contrib import admin
 from pilas.models.proyecto import Proyecto
+from django.utils.html import format_html
 
 class ProyectoAdmin(admin.ModelAdmin):
     model = Proyecto
-    list_display = ('id', 'nombre')
+    list_display = ('id', 'nombre', 'hash', 'url')
     search_fields = ('nombre', )
+
+    def url(self, obj):
+        baseurl = os.environ.get('BACKEND_URL')
+        url = os.path.join(baseurl, "proyecto", str(obj.hash))
+        return format_html("<a href='{url}'>{url}</a>", url=url)

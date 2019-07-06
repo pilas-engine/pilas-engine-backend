@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script>
-      var proyecto_serializado_inicial = "CODIGO_SERIALIZADO";
+      var proyecto_serializado_inicial = "{{proyecto.codigo_serializado}}";
     </script>
 
     <style>
@@ -44,6 +44,29 @@
         object-fit: contain;
         margin-left: 0 !important;
       }
+
+      .footer {
+        position: fixed;
+        right: 0;
+        color: gray;
+        bottom: 0;
+        font-family: verdana;
+        padding: 6px;
+      }
+
+      .footer a {
+        color: gray;
+        text-decoration: none;
+        font-size: small;
+      }
+
+      .footer a:hover {
+        opacity: 0.7;
+      }
+
+      .footer a:visited {
+        color: gray;
+      }
     </style>
 
     <script src="{% static "phaser.js" %}"></script>
@@ -65,15 +88,16 @@
       }
     </script>
 
-<h1>proyecto {{proyecto_id}}</h1>
-<p>proyecto nombre: {{proyecto.nombre}}</p>
-
     <div id="game"></div>
+    <div class="footer">
+      <a href="https://pilas-engine.com.ar" target="_blank">pilas-engine</a>
+    </div>
 
     <script>
       var ha_iniciado = false;
 
       var proyecto = JSON.parse(b64DecodeUnicode(proyecto_serializado_inicial));
+      console.log(proyecto);
       var pilas = pilasengine.iniciar(proyecto.proyecto.ancho * 1, proyecto.proyecto.alto);
 
       pilas.onready = function() {
