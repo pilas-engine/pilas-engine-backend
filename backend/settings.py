@@ -2,7 +2,7 @@ import os
 import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "0.0.10"
+VERSION = "0.0.11"
 
 SECRET_KEY = '+^&h3f(g%*@j!b@i2dc9yd&jzwg9cw(xnw$j&@n+hay(fh)eoc'
 
