@@ -67,3 +67,12 @@ def subir(request):
         "hash": proyecto.hash,
         "error": ""
     })
+
+def obtener(request, proyecto_id):
+    proyecto = Proyecto.objects.get(hash=proyecto_id)
+
+    return JsonResponse({
+        "ok": True,
+        "serializado": proyecto.codigo_serializado,
+        "error": ""
+    })
