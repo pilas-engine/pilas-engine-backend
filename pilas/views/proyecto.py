@@ -50,13 +50,10 @@ def subir(request):
             "error": "Faltan parámetros"
         }, status=400)
 
-
-    ver_codigo = True
-
     proyecto = Proyecto.objects.create(
         codigo=datos["codigo"],
         codigo_serializado=datos["codigo_serializado"],
-        ver_codigo=ver_codigo
+        ver_codigo=datos.get("ver_codigo", True)
     )
 
     baseurl = os.environ.get('BACKEND_URL')
