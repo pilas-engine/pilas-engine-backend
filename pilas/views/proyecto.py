@@ -2,9 +2,7 @@ import os
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-from pathlib import Path
 import mimetypes
-import posixpath
 from django.utils._os import safe_join
 
 from rest_framework import viewsets
@@ -52,9 +50,13 @@ def subir(request):
             "error": "Faltan parámetros"
         }, status=400)
 
+
+    ver_codigo = True
+
     proyecto = Proyecto.objects.create(
         codigo=datos["codigo"],
-        codigo_serializado=datos["codigo_serializado"]
+        codigo_serializado=datos["codigo_serializado"],
+        ver_codigo=ver_codigo
     )
 
     baseurl = os.environ.get('BACKEND_URL')
@@ -74,5 +76,6 @@ def obtener(request, proyecto_id):
     return JsonResponse({
         "ok": True,
         "serializado": proyecto.codigo_serializado,
+        "ver_codigo": proyecto.ver_codigo,
         "error": ""
     })

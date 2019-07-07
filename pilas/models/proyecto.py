@@ -6,6 +6,7 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=200, default="")
     codigo = models.TextField(default="")
     codigo_serializado = models.TextField(default="")
+    ver_codigo = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-id']

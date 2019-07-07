@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 class ProyectoAdmin(admin.ModelAdmin):
     model = Proyecto
-    list_display = ('id', 'nombre', 'hash', 'url')
+    list_display = ('id', 'nombre', 'hash', 'url', 'ver_codigo')
     search_fields = ('nombre', )
 
     def url(self, obj):
