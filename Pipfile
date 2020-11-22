@@ -1,21 +1,15 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [dev-packages]
 
-
-
 [packages]
-
 django = "*"
 dj-static = "*"
 dj-database-url = "*"
 ipdb = "*"
-pprint = "*"
 "psycopg2-binary" = "*"
 watchdog = "*"
 honcho = "*"
@@ -26,7 +20,5 @@ django-cors-headers = "*"
 djangorestframework-jsonapi = "*"
 djangorestframework = "*"
 
-
 [requires]
-
 python_version = "3"

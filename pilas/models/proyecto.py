@@ -4,7 +4,6 @@ from django.db import models
 class Proyecto(models.Model):
     hash = models.CharField(max_length=64, default="")
     nombre = models.CharField(max_length=200, default="")
-    codigo = models.TextField(default="")
     codigo_serializado = models.TextField(default="")
     ver_codigo = models.BooleanField(default=True)
 
@@ -20,5 +19,6 @@ class Proyecto(models.Model):
         return self.nombre
 
     def save(self, *args, **kwargs):
-        self.hash = uuid.uuid4()
+        if not self.hash:
+            self.hash = uuid.uuid4()
         super(Proyecto, self).save(*args, **kwargs)

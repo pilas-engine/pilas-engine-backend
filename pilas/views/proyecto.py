@@ -44,17 +44,22 @@ def servir_archivo(proyecto_id):
 def subir(request):
     datos = json.loads(request.body)
 
-    if "codigo" not in datos or "codigo_serializado" not in datos:
+    if "codigo_serializado" not in datos:
         return JsonResponse({
             "ok": False,
             "error": "Faltan parámetros"
         }, status=400)
 
-    proyecto = Proyecto.objects.create(
-        codigo=datos["codigo"],
-        codigo_serializado=datos["codigo_serializado"],
-        ver_codigo=datos.get("ver_codigo", True)
-    )
+    if "hash" in datos:
+        # UPDATE de parte
+        proyecto = Proyecto.objects.get(hash=datos['hash'])
+        proyecto.codigo_serializado += datos["codigo_serializado"]
+        proyecto.save()
+    else:
+        proyecto = Proyecto.objects.create(
+            codigo_serializado=datos["codigo_serializado"],
+            ver_codigo=datos.get("ver_codigo", True)
+        )
 
     baseurl = os.environ.get('BACKEND_URL')
     frontendurl = os.environ.get('FRONTEND_URL')
