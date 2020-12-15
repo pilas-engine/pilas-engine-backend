@@ -13,6 +13,7 @@ else:
 
 ALLOWED_HOSTS = [
     'pilas-engine-backend.hugoruscitti.com.ar',
+    'pilas-engine-backend.examplelab.com.ar',
     'backend.pilas-engine.com.ar',
     '127.0.0.4',
     'localhost',
