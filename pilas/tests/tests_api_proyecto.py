@@ -30,7 +30,7 @@ class APIProyectoTests(APITestCase):
         response = self.client.post("/proyecto/subir", data, format="json")
         self.assertEqual(response.json()['ok'], True)
 
-    def test_puede_enviar_un_proyecto_por_partes(self):
+    def ____DEPRECATED____puede_enviar_un_proyecto_por_partes(self):
         codigo = CODIGO
 
         codigo_primer_parte = codigo[:600]

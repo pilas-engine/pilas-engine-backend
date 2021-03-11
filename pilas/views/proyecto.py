@@ -63,7 +63,7 @@ def subir(request):
 
     if "hash" in datos:
         # UPDATE de parte
-        raise "La subida de proyectos grandes está descativada momentaneamente, por favor reintenta otro día."
+        raise Exception("La subida de proyectos grandes está descativada momentaneamente, por favor reintenta otro día.")
         proyecto = Proyecto.objects.get(hash=datos['hash'])
         proyecto.actualizar_parte(datos["codigo_serializado"])
         proyecto.save()
@@ -73,7 +73,6 @@ def subir(request):
         )
 
         ruta = generar_archivo_desde_codigo_serializado(datos["codigo_serializado"])
-        print(f"generando el archivo {ruta}")
         proyecto.archivo.save(f"{proyecto.hash}.zip", File(open(ruta, 'rb')))
         os.remove(ruta)
 
