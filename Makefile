@@ -47,7 +47,7 @@ clear:
 
 test: clear migrar
 	@echo "${G}Ejecutando tests ...${N}"
-	pipenv run flake8;pipenv run python manage.py test # -v 2
+	pipenv run flake8; pipenv run python manage.py test 
 
 test_live:
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .

@@ -1,4 +1,6 @@
 import os
+import zipfile
+import tempfile
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -7,6 +9,7 @@ from django.utils._os import safe_join
 
 from rest_framework import viewsets
 from django.http import FileResponse
+from django.core.files import File
 from pilas.models.proyecto import Proyecto
 from pilas.serializers.proyecto import ProyectoSerializer
 
@@ -41,6 +44,14 @@ def servir_archivo(proyecto_id):
     response = FileResponse(open(archivo, 'rb'), content_type=content_type)
     return response
 
+def generar_archivo_desde_codigo_serializado(contenido):
+    _, temp_file_path = tempfile.mkstemp()
+    z = zipfile.ZipFile(temp_file_path, 'w', zipfile.ZIP_DEFLATED)
+    z.writestr('proyecto.pilas', contenido)
+    z.close()
+
+    return temp_file_path
+
 def subir(request):
     datos = json.loads(request.body)
 
@@ -52,14 +63,19 @@ def subir(request):
 
     if "hash" in datos:
         # UPDATE de parte
+        raise "La subida de proyectos grandes está descativada momentaneamente, por favor reintenta otro día."
         proyecto = Proyecto.objects.get(hash=datos['hash'])
-        proyecto.codigo_serializado += datos["codigo_serializado"]
+        proyecto.actualizar_parte(datos["codigo_serializado"])
         proyecto.save()
     else:
         proyecto = Proyecto.objects.create(
-            codigo_serializado=datos["codigo_serializado"],
             ver_codigo=datos.get("ver_codigo", True)
         )
+
+        ruta = generar_archivo_desde_codigo_serializado(datos["codigo_serializado"])
+        print(f"generando el archivo {ruta}")
+        proyecto.archivo.save(f"{proyecto.hash}.zip", File(open(ruta, 'rb')))
+        os.remove(ruta)
 
     baseurl = os.environ.get('BACKEND_URL')
     frontendurl = os.environ.get('FRONTEND_URL')
@@ -77,7 +93,7 @@ def obtener(request, proyecto_id):
 
     return JsonResponse({
         "ok": True,
-        "serializado": proyecto.codigo_serializado,
+        "serializado": proyecto.obtener_codigo_serializado(),
         "ver_codigo": proyecto.ver_codigo,
         "error": ""
     })

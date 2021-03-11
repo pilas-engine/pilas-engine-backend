@@ -5,14 +5,17 @@ from django.utils.html import format_html
 
 class ProyectoAdmin(admin.ModelAdmin):
     model = Proyecto
-    list_display = ('id', 'nombre', 'hash', 'url', 'ver_codigo')
-    search_fields = ('nombre', )
-
-    def change_view(self, request, object_id, extra_context=None):       
-        self.exclude = ('codigo_serializado', )
-        return super(ProyectoAdmin, self).change_view(request, object_id, extra_context)
+    list_display = ('id', 'creacion', 'hash', 'size', 'url', 'ver_codigo')
+    search_fields = ('hash', 'id')
 
     def url(self, obj):
         baseurl = os.environ.get('BACKEND_URL')
         url = os.path.join(baseurl, "proyecto", str(obj.hash))
         return format_html("<a href='{url}'>{url}</a>", url=url)
+
+    def size(self, obj):
+        if obj.archivo:
+            s = obj.archivo.size / 1024 / 1024
+            return f"{s:.2f} MB"
+        else:
+            return ""
