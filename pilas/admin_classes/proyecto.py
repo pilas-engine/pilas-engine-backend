@@ -9,9 +9,8 @@ class ProyectoAdmin(admin.ModelAdmin):
     search_fields = ('hash', 'id')
 
     def url(self, obj):
-        baseurl = os.environ.get('BACKEND_URL')
-        url = os.path.join(baseurl, "proyecto", str(obj.hash))
-        return format_html("<a href='{url}'>{url}</a>", url=url)
+        hash = str(obj.hash)
+        return format_html(f"<a target='_blank' href='http://localhost:4200/#/proyecto/{hash}'>ver</a>")
 
     def size(self, obj):
         if obj.archivo:
