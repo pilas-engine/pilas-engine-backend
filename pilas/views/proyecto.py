@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import mimetypes
 from django.utils._os import safe_join
-
+import base64
+from django.core.files.base import ContentFile
 from rest_framework import viewsets
 from django.http import FileResponse
 from django.core.files import File
@@ -54,6 +55,9 @@ def generar_archivo_desde_codigo_serializado(contenido):
 
 def subir(request):
     datos = json.loads(request.body)
+    cantidad_de_partes = datos.get("cantidad_de_partes", 1)
+    numero_de_parte = datos.get("numero_de_parte", 1)
+    imagen_en_base64 = datos.get("imagen_en_base64", None)
 
     if "codigo_serializado" not in datos:
         return JsonResponse({
@@ -61,23 +65,34 @@ def subir(request):
             "error": "Faltan parámetros"
         }, status=400)
 
-    if "hash" in datos:
-        # UPDATE de parte
-        raise Exception("La subida de proyectos grandes está descativada momentaneamente, por favor reintenta otro día.")
-        proyecto = Proyecto.objects.get(hash=datos['hash'])
-        proyecto.actualizar_parte(datos["codigo_serializado"])
+    if cantidad_de_partes > 1:
+        # Si el proyecto llega en partes, se asegura de crear
+        # el proyecto cuando llega la primer parte.
+        if numero_de_parte == 0:
+            proyecto = Proyecto.objects.create(ver_codigo=True)
+        else:
+            proyecto = Proyecto.objects.get(hash=datos['hash'])
+
+        # Este método es bastante especial, porque se asegura de
+        # que las partes se puedan unir cuando llegue la última parte.
+        proyecto.actualizar_parte(datos["codigo_serializado"], cantidad_de_partes, numero_de_parte)
         proyecto.save()
     else:
-        proyecto = Proyecto.objects.create(
-            ver_codigo=datos.get("ver_codigo", True)
-        )
+        proyecto = Proyecto.objects.create(ver_codigo=True)
 
         ruta = generar_archivo_desde_codigo_serializado(datos["codigo_serializado"])
         proyecto.archivo.save(f"{proyecto.hash}.zip", File(open(ruta, 'rb')))
         os.remove(ruta)
 
-    baseurl = os.environ.get('BACKEND_URL')
-    frontendurl = os.environ.get('FRONTEND_URL')
+    if imagen_en_base64:
+        format, imgstr = imagen_en_base64.split(';base64,')
+        ext = format.split('/')[-1]
+        data = ContentFile(base64.b64decode(imgstr))
+        file_name = "'myphoto." + ext
+        proyecto.imagen.save(f"imagen.{ext}", data, save=True)
+
+    baseurl = os.environ.get('BACKEND_URL', "???????")
+    frontendurl = os.environ.get('FRONTEND_URL', "???????")
 
     return JsonResponse({
         "ok": True,

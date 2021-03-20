@@ -30,7 +30,7 @@ class APIProyectoTests(APITestCase):
         response = self.client.post("/proyecto/subir", data, format="json")
         self.assertEqual(response.json()['ok'], True)
 
-    def ____DEPRECATED____puede_enviar_un_proyecto_por_partes(self):
+    def test_puede_enviar_un_proyecto_por_partes(self):
         codigo = CODIGO
 
         codigo_primer_parte = codigo[:600]
@@ -38,7 +38,9 @@ class APIProyectoTests(APITestCase):
 
         response = self.client.post("/proyecto/subir", {
             "codigo_serializado": codigo_primer_parte,
-            "ver_codigo": True
+            "ver_codigo": True,
+            "cantidad_de_partes": 2,
+            "numero_de_parte": 0,
         }, format="json")
 
         self.assertEqual(response.json()['ok'], True)
@@ -48,7 +50,9 @@ class APIProyectoTests(APITestCase):
         response = self.client.post("/proyecto/subir", {
             "codigo_serializado": codigo_segunda_parte,
             "ver_codigo": True,
-            "hash": hash
+            "hash": hash,
+            "cantidad_de_partes": 2,
+            "numero_de_parte": 1,
         }, format="json")
 
         response = self.client.get("/proyecto/obtener/" + hash)
