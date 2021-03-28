@@ -8,8 +8,8 @@ Y=[01;33m
 B=[01;34m
 L=[01;30m
 
-DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/pilas-engine-backend/pilas-engine-backend_`date +'%Y%m%d_%Hhs%Mmin'`.dump
-DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/4cores/Backups/pilas-engine-backend/pilas-engine-backend_*.dump  | tail -n 1`
+DB_NOMBRE_DEL_DUMP=~/Dropbox/backups/pilas-engine-backend/pilas-engine-backend_`date +'%Y%m%d_%Hhs%Mmin'`.dump
+DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/backups/pilas-engine-backend/pilas-engine-backend_*.dump  | tail -n 1`
 
 comandos:
 	@echo ""
@@ -28,6 +28,7 @@ comandos:
 	@echo "    ${G}shell${N}                     Ejecuta un intérprete de python."
 	@echo "    ${G}version${N}                   Incrementa la versión."
 	@echo "    ${G}realizar_backup_desde_produccion${N}   "
+	@echo "    ${G}cargar_ultimo_dump_localmente{N}   "
 	@echo ""
 	@echo ""
 
@@ -83,7 +84,9 @@ actualizar_pilas:
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
-	@ssh dokku@hugoruscitti.com.ar postgres:export pilas-engine-backend > ${DB_NOMBRE_DEL_DUMP}
+	@ssh dokku@pilas-engine.com.ar postgres:export pilas-engine-backend > ${DB_NOMBRE_DEL_DUMP}
+	@rsync -vP "root@pilas-engine.com.ar:/var/lib/dokku/data/storage/pilas-engine-backend/imagenes/*" ./media_archivos_locales/imagenes/
+	@rsync -vP "root@pilas-engine.com.ar:/var/lib/dokku/data/storage/pilas-engine-backend/proyectos/*" ./media_archivos_locales/proyectos/
 
 cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"
