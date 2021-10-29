@@ -27,6 +27,7 @@ comandos:
 	@echo "    ${G}test_server${N}               Ejecuta el servidor en modo test."
 	@echo "    ${G}shell${N}                     Ejecuta un intérprete de python."
 	@echo "    ${G}version${N}                   Incrementa la versión."
+	@echo "    ${G}deploy${N}                    Realiza un deploy de la aplicación."
 	@echo "    ${G}realizar_backup_desde_produccion${N}   "
 	@echo "    ${G}cargar_ultimo_dump_localmente{N}   "
 	@echo ""
@@ -41,6 +42,9 @@ crear_migraciones:
 
 migrar:
 	@pipenv run python manage.py migrate --noinput
+
+deploy:
+	@git push dokku master
 
 clear:
 	dropdb --if-exists pilas-engine-backend-test -e; createdb pilas-engine-backend-test

@@ -23,7 +23,7 @@ class Perfil(models.Model):
         try:
             user = User.objects.get(username=usuario)
         except Exception:
-            user = User.objects.create_user(username=usuario, password='123')
+            user = User.objects.create_user(username=usuario)
 
         user.perfil.nombre = nombre
         user.perfil.save()
