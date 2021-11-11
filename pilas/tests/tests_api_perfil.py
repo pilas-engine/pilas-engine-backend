@@ -22,6 +22,23 @@ class APIPerfilTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
 
+    def test_se_puede_autenticar_y_obtener_datos_del_usuario(self):
+        self.crear_usuario()
+
+        auth_data = {
+            'username': 'hugo',
+            'password': 'dev123'
+        }
+
+        response = self.client.post('/api-token-auth/', auth_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        token = response.data["token"]
+
+        response = self.client.get(f"/perfiles/obtener-perfil-desde-token/{token}", auth_data, format='json')
+        print(response)
+
+
     def test_falla_si_el_password_es_incorrecto(self):
         self.crear_usuario()
         auth_data = {
@@ -62,3 +79,17 @@ class APIPerfilTests(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
+
+    def test_falla_si_el_usuario_ya_existe(self):
+        datos = {
+            'usuario': 'pepe',
+            'email': 'pepe@gmail.com',
+            'password': '123',
+        }
+
+        response = self.client.post('/perfiles/crear-usuario', datos, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post('/perfiles/crear-usuario', datos, format='json')
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json()["error"], "El usuario ya existe")

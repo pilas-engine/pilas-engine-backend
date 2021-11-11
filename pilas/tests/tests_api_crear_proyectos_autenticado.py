@@ -22,11 +22,9 @@ class APICrearProyectosAutenticadoTests(APITestCase):
         }
 
         response = self.client.post('/api-token-auth/', auth_data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, 200)
 
-        token = response.data["token"]
-        print(token)
+        self.assertTrue(response.data["token"], 200)
 
 
 
