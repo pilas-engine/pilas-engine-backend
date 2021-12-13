@@ -58,7 +58,12 @@ test_live:
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
 ejecutar:
-	@pipenv run python manage.py runserver
+	DISABLE_COLLECTSTATIC=1 \
+	BACKEND_URL=http://localhost:8000 \
+	FRONTEND_URL=http://localhost:4200 \
+	DEBUG=1 \
+	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
+	venv/bin/python manage.py runserver
 
 testserver:
 	@pipenv run python manage.py testserver fixture.json

@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 .DS_Store
 media_archivos_locales
+backups
 
 
 # C extensions
