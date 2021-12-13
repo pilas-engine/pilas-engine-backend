@@ -8,8 +8,8 @@ Y=[01;33m
 B=[01;34m
 L=[01;30m
 
-DB_NOMBRE_DEL_DUMP=~/Dropbox/backups/pilas-engine-backend/pilas-engine-backend_`date +'%Y%m%d_%Hhs%Mmin'`.dump
-DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/backups/pilas-engine-backend/pilas-engine-backend_*.dump  | tail -n 1`
+DB_NOMBRE_DEL_DUMP=./backups/pilas-engine-backend_`date +'%Y%m%d_%Hhs%Mmin'`.dump
+DB_DUMP_MAS_RECIENTE=`ls -Art ./backups/pilas-engine-backend_*.dump  | tail -n 1`
 
 comandos:
 	@echo ""
