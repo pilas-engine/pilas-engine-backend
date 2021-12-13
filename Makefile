@@ -29,7 +29,7 @@ comandos:
 	@echo "    ${G}version${N}                   Incrementa la versión."
 	@echo "    ${G}deploy${N}                    Realiza un deploy de la aplicación."
 	@echo "    ${G}realizar_backup_desde_produccion${N}   "
-	@echo "    ${G}cargar_ultimo_dump_localmente{N}   "
+	@echo "    ${G}cargar_ultimo_dump_localmente${N}"
 	@echo ""
 	@echo ""
 
