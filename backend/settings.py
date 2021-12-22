@@ -24,6 +24,13 @@ JSON_API_FORMAT_KEYS = 'dasherize'
 JSON_API_FORMAT_RELATION_KEYS = 'dasherize'
 JSON_API_PLURALIZE_RELATION_TYPE = True
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "HTTP_AUTHORIZATION",
+]
+
 APPEND_SLASH = False
 
 
@@ -40,10 +47,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

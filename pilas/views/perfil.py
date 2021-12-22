@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
 
@@ -44,3 +45,10 @@ def perfiles_obtener_perfil_desde_token(request, token):
     return JsonResponse({
         "nombre": user.perfil.nombre
     })
+
+def perfiles_logout(request):
+    request.user.auth_token.delete()
+    logout(request)
+
+    return Response({"success": "Successfully logged out."}, status=status.HTTP_200_OK)
+

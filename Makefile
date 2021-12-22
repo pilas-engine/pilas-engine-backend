@@ -41,7 +41,12 @@ crear_migraciones:
 	@pipenv run python manage.py makemigrations
 
 migrar:
-	@pipenv run python manage.py migrate --noinput
+	@DISABLE_COLLECTSTATIC=1 \
+	BACKEND_URL=http://localhost:8000 \
+	FRONTEND_URL=http://localhost:4200 \
+	DEBUG=1 \
+	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
+	python manage.py migrate --noinput
 
 deploy:
 	@git push dokku master
@@ -52,7 +57,12 @@ clear:
 
 test: clear migrar
 	@echo "${G}Ejecutando tests ...${N}"
-	pipenv run flake8; pipenv run python manage.py test 
+	@DISABLE_COLLECTSTATIC=1 \
+	BACKEND_URL=http://localhost:8000 \
+	FRONTEND_URL=http://localhost:4200 \
+	DEBUG=1 \
+	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
+	venv/bin/python manage.py test
 
 test_live:
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
