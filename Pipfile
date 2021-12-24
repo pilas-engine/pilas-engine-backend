@@ -6,7 +6,7 @@ name = "pypi"
 [dev-packages]
 
 [packages]
-django = "*"
+django = "3.1.14"
 dj-static = "*"
 dj-database-url = "*"
 ipdb = "*"
@@ -19,6 +19,8 @@ gunicorn = "*"
 django-cors-headers = "*"
 djangorestframework-jsonapi = "*"
 djangorestframework = "*"
+sqlparse = "0.4.2"
+pygments = "2.7.4"
 
 [requires]
 python_version = "3"
