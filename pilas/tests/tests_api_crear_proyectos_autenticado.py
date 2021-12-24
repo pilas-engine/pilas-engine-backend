@@ -1,6 +1,8 @@
 from rest_framework.test import APITestCase
 from pilas.tests.utilidades import autenticar
 from pilas.models.perfil import Perfil
+from pilas.models.proyecto import Proyecto
+
 
 class APICrearProyectosAutenticadoTests(APITestCase):
 
@@ -21,11 +23,28 @@ class APICrearProyectosAutenticadoTests(APITestCase):
             'password': 'dev123',
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["token"])
 
-        self.assertTrue(response.data["token"], 200)
+        # No hay ningún proyecto por el momento
+        self.assertEqual(Proyecto.objects.count(), 0)
 
+        # Sube un proyecto simple
+        data = {
+            "codigo_serializado": "ASDASD",
+        }
 
+        token = response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
 
+        response = self.client.post("/proyecto/subir", data, format="json")
+        self.assertEqual(response.json()["ok"], True)
+        self.assertTrue(response.json()["hash"])
 
+        # Valida que se creó el proyecto
+        self.assertEqual(Proyecto.objects.count(), 1)
+
+        # Obtiene el usuario creado
+        perfil = Perfil.objects.get(nombre="hugo")
+        self.assertEqual(perfil.proyectos.count(), 1)

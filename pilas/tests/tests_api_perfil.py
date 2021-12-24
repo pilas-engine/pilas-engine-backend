@@ -17,7 +17,7 @@ class APIPerfilTests(APITestCase):
             'password': 'dev123'
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
@@ -30,13 +30,22 @@ class APIPerfilTests(APITestCase):
             'password': 'dev123'
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
 
         self.assertEqual(response.status_code, 200)
         token = response.data["token"]
 
-        #response = self.client.get(f"/perfiles/obtener-perfil-desde-token/{token}", auth_data, format='json')
+        # Si consulta mi-perfil sin token falla
+        response = self.client.get(f"/perfiles/mi-perfil")
+        self.assertEqual(response.status_code, 401)
 
+        # Si consulta mi-perfil con un token retorna los datos
+        # del usuario
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.get(f"/perfiles/mi-perfil")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['nombre'], 'hugo')
 
     def test_falla_si_el_password_es_incorrecto(self):
         self.crear_usuario()
@@ -45,7 +54,7 @@ class APIPerfilTests(APITestCase):
             'password': 'asdfasdfasdfasdfasdf123',
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
         self.assertEqual(response.status_code, 400)
 
     def crear_usuario(self):
@@ -74,7 +83,7 @@ class APIPerfilTests(APITestCase):
             'password': '123'
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
@@ -94,10 +103,6 @@ class APIPerfilTests(APITestCase):
         self.assertEqual(response.json()["error"], "El usuario ya existe")
 
     def test_puede_consultar_la_sesion(self):
-        response = self.client.get('/sesion/')
-        print(response.data)
-
-    def _____DISABLED____se_puede_autenticar_y_cerrar_session(self):
         self.crear_usuario()
 
         auth_data = {
@@ -105,12 +110,16 @@ class APIPerfilTests(APITestCase):
             'password': 'dev123'
         }
 
-        response = self.client.post('/api-token-auth/', auth_data, format='json')
+        response = self.client.post('/login/', auth_data, format='json')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('token' in response.data)
         token = response.data['token']
 
-        self.client.credentials(authorization='Token ' + token)
-        response = self.client.get('/api-token-logout/', format='json')
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.get('/sesion/')
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.get('/logout/')
         self.assertEqual(response.status_code, 200)
+

@@ -7,6 +7,10 @@ class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=200, default="")
 
+    # Relaciones inversas:
+    #
+    # - proyectos
+
     class Meta:
         ordering = ['-id']
         db_table = 'perfiles'

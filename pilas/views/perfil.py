@@ -1,12 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from django.contrib.auth import logout
 import json
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from pilas.models.perfil import Perfil
 from pilas.serializers.perfil import PerfilSerializer
+
 
 class PerfilViewSet(viewsets.ModelViewSet):
     queryset = Perfil.objects.all()
@@ -39,16 +42,21 @@ def perfiles_crear_usuario(request):
     }, status=200)
 
 
-def perfiles_obtener_perfil_desde_token(request, token):
-    user = Token.objects.get(key=token).user
+@api_view(('GET',))
+@renderer_classes((JSONRenderer, ))
+def perfiles_mi_perfil(request):
+    token = request.META.get('HTTP_AUTHORIZATION', None)
 
-    return JsonResponse({
-        "nombre": user.perfil.nombre
-    })
+    if token:
+        key = token.split(" ")[1]
+        user = Token.objects.get(key=key).user
 
-def perfiles_logout(request):
-    request.user.auth_token.delete()
-    logout(request)
+        return Response({
+            "nombre": user.perfil.nombre
+        })
+    else:
+        return Response({
+            "error": "Debe especificar el token de acceso"
+        }, 401)
 
-    return Response({"success": "Successfully logged out."}, status=status.HTTP_200_OK)
 

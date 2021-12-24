@@ -1,12 +1,13 @@
+import mimetypes
+import base64
 import os
 import zipfile
 import tempfile
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-import mimetypes
+from rest_framework.authtoken.models import Token
 from django.utils._os import safe_join
-import base64
 from django.core.files.base import ContentFile
 from rest_framework import viewsets
 from django.http import FileResponse
@@ -54,6 +55,17 @@ def generar_archivo_desde_codigo_serializado(contenido):
     return temp_file_path
 
 def subir(request):
+
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    perfil = None
+
+    # Solo si el request se hace autenticado se asocia
+    # el proyecto al perfil de usuario
+    if token:
+        key = token.split(" ")[1]
+        user = Token.objects.get(key=key).user
+        perfil = user.perfil
+
     datos = json.loads(request.body)
     cantidad_de_partes = datos.get("cantidad_de_partes", 1)
     numero_de_parte = datos.get("numero_de_parte", 1)
@@ -69,7 +81,7 @@ def subir(request):
         # Si el proyecto llega en partes, se asegura de crear
         # el proyecto cuando llega la primer parte.
         if numero_de_parte == 0:
-            proyecto = Proyecto.objects.create(ver_codigo=True)
+            proyecto = Proyecto.objects.create(ver_codigo=True, perfil=perfil)
         else:
             proyecto = Proyecto.objects.get(hash=datos['hash'])
 
@@ -78,7 +90,7 @@ def subir(request):
         proyecto.actualizar_parte(datos["codigo_serializado"], cantidad_de_partes, numero_de_parte)
         proyecto.save()
     else:
-        proyecto = Proyecto.objects.create(ver_codigo=True)
+        proyecto = Proyecto.objects.create(ver_codigo=True, perfil=perfil)
 
         ruta = generar_archivo_desde_codigo_serializado(datos["codigo_serializado"])
         proyecto.archivo.save(f"{proyecto.hash}.zip", File(open(ruta, 'rb')))

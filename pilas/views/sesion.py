@@ -7,6 +7,8 @@ from django.http import JsonResponse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
+
 
 class SesionViewSet(APIView):
 
@@ -14,7 +16,7 @@ class SesionViewSet(APIView):
         content = {'message': 'Hello, World!'}
         return Response(content)
 
-    @classmethod
-    def get_extra_actions(cls):
-        return []
+    @action(detail=False, path="logout", methods=["GET"])
+    def logout(self, request, **kwargs):
+        return Response("¿que?")
 

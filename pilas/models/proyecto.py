@@ -11,6 +11,7 @@ class Proyecto(models.Model):
     ver_codigo = models.BooleanField(default=True)
     archivo = models.FileField(upload_to='proyectos/', default=None, null=True)
     imagen = models.FileField(upload_to='imagenes/', default=None, null=True)
+    perfil = models.ForeignKey('Perfil', related_name="proyectos", default=None, null=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-id']
