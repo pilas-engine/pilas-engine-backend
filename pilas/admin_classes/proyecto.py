@@ -5,8 +5,19 @@ from django.utils.safestring import mark_safe
 
 class ProyectoAdmin(admin.ModelAdmin):
     model = Proyecto
-    list_display = ('id', 'creacion', 'imagen_tag', 'hash', 'size', 'url', 'ver_codigo')
-    search_fields = ('hash', 'id')
+    list_display = (
+            'id', 
+            'creacion', 
+            'imagen_tag', 
+            'lista_de_tags', 
+            'size', 
+            'url', 
+            'ver_codigo',
+    )
+    search_fields = (
+            'hash', 
+            'id',
+    )
 
     def url(self, obj):
         hash = str(obj.hash)
@@ -24,3 +35,10 @@ class ProyectoAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src=\"{obj.imagen.url}\" width=\"160\">")
         else:
             return ""
+
+    def lista_de_tags(self, obj):
+        return ", ".join([t.nombre for t in obj.tags.all()])
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('tags')

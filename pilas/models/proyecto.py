@@ -1,9 +1,10 @@
+import os
+import zipfile
 import uuid
 import shutil
 from django.db import models
 from django.core.files import File
-import zipfile
-import os
+
 
 class Proyecto(models.Model):
     hash = models.CharField(max_length=64, default="")
@@ -12,6 +13,7 @@ class Proyecto(models.Model):
     archivo = models.FileField(upload_to='proyectos/', default=None, null=True)
     imagen = models.FileField(upload_to='imagenes/', default=None, null=True)
     perfil = models.ForeignKey('Perfil', related_name="proyectos", default=None, null=True, on_delete=models.CASCADE)
+    tags = models.ManyToManyField('Tag', related_name="proyectos")
 
     class Meta:
         ordering = ['-id']
