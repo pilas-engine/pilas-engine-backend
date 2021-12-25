@@ -24,21 +24,6 @@ class ProyectoViewSet(viewsets.ModelViewSet):
     search_fields = ['nombre']
     filter_fields = ['nombre']
 
-def proyecto(request, proyecto_id):
-    if "-" in proyecto_id and "." not in proyecto_id:
-        try:
-            proyecto = Proyecto.objects.get(hash=proyecto_id)
-        except Proyecto.DoesNotExist:
-            return JsonResponse({
-                "ok": False,
-                "error": "No se encuentra este proyecto"
-            }, status=404)
-
-        context = {'proyecto_id': proyecto_id, 'proyecto': proyecto}
-        return render(request, 'proyecto.html', context)
-    else:
-        return servir_archivo(proyecto_id)
-
 def servir_archivo(proyecto_id):
     archivo = safe_join("static", proyecto_id)
     content_type, encoding = mimetypes.guess_type(str(archivo))

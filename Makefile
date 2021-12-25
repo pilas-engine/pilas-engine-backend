@@ -20,13 +20,9 @@ comandos:
 	@echo "    ${G}iniciar${N}                   Instala todas las dependencias."
 	@echo "    ${G}crear_migraciones${N}         Genera las migraciones."
 	@echo "    ${G}migrar${N}                    Ejecuta las migraciones."
-	@echo "    ${G}actualizar_pilas${N}          Actualiza pilas desde un directorio externo."
 	@echo "    ${G}test${N}                      Ejecuta los tests."
-	@echo "    ${G}test_live${N}                 Ejecuta los tests de forma continua."
 	@echo "    ${G}ejecutar${N}                  Ejecuta el servidor en modo desarrollo."
-	@echo "    ${G}test_server${N}               Ejecuta el servidor en modo test."
 	@echo "    ${G}shell${N}                     Ejecuta un intérprete de python."
-	@echo "    ${G}version${N}                   Incrementa la versión."
 	@echo "    ${G}deploy${N}                    Realiza un deploy de la aplicación."
 	@echo "    ${G}realizar_backup_desde_produccion${N}   "
 	@echo "    ${G}cargar_ultimo_dump_localmente${N}"
@@ -35,18 +31,15 @@ comandos:
 
 
 iniciar:
-	@pipenv install
+	@echo "Tienes que crear el entorno virtual y luego"
+	@echo "ejecutar el comando pip install -r requirements.txt"
+	@echo ""
 
 crear_migraciones:
-	@pipenv run python manage.py makemigrations
+	dotenv run -- python manage.py makemigrations
 
 migrar:
-	@DISABLE_COLLECTSTATIC=1 \
-	BACKEND_URL=http://localhost:8000 \
-	FRONTEND_URL=http://localhost:4200 \
-	DEBUG=1 \
-	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
-	python manage.py migrate --noinput
+	dotenv run -- python manage.py migrate --noinput
 
 deploy:
 	@git push dokku master
@@ -57,49 +50,14 @@ clear:
 
 test: clear migrar
 	@echo "${G}Ejecutando tests ...${N}"
-	@DISABLE_COLLECTSTATIC=1 \
-	BACKEND_URL=http://localhost:8000 \
-	FRONTEND_URL=http://localhost:4200 \
-	DEBUG=1 \
-	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
-	venv/bin/python manage.py test
-
-test_live:
-	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
+	dotenv run -- python manage.py test
 
 ejecutar:
-	DISABLE_COLLECTSTATIC=1 \
-	BACKEND_URL=http://localhost:8000 \
-	FRONTEND_URL=http://localhost:4200 \
-	DEBUG=1 \
-	DATABASE_URL="postgres://postgres:postgress@localhost/pilas-engine-backend" \
-	venv/bin/python manage.py runserver
-
-testserver:
-	@pipenv run python manage.py testserver fixture.json
+	dotenv run -- python manage.py runserver
 
 shell:
-	@pipenv run python manage.py shell -i ipython
+	dotenv run -- python manage.py shell
 
-version:
-	@pipenv run bumpversion patch --verbose
-	@git push
-	@git push --tags
-
-actualizar_pilas:
-	@cp ../pilas-engine/public/pilas-engine.js static/
-	@cp ../pilas-engine/public/imagenes-0.png static/
-	@cp ../pilas-engine/public/imagenes.json static/
-	@cp ../pilas-engine/public/ceferino.json static/
-	@cp ../pilas-engine/public/ceferino.png static/
-	@cp ../pilas-engine/public/ceferino.scon static/
-	@cp ../pilas-engine/public/nineslice.js static/
-	@cp ../pilas-engine/public/phaser.js static/
-	@cp ../pilas-engine/public/robot.json static/
-	@cp ../pilas-engine/public/robot.png static/
-	@cp ../pilas-engine/public/robot.scon static/
-	@cp -r ../pilas-engine/public/fuentes static/
-	@cp -r ../pilas-engine/public/sonidos static/
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
