@@ -9,6 +9,7 @@ from rest_framework.authtoken import views
 from pilas.views.perfil import PerfilViewSet
 from pilas.views.explorar import ExplorarViewSet
 from pilas.views.logout import LogOutViewSet
+from pilas.views.buscar_etiquetas import BuscarEtiquetasViewSet
 from pilas.views.perfil import perfiles_crear_usuario
 from pilas.views.perfil import perfiles_mi_perfil
 from pilas.views.home import home
@@ -27,6 +28,7 @@ urlpatterns = [
     path('perfiles/mi-perfil', perfiles_mi_perfil, name='perfiles.mi_perfil'),
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('buscar-etiquetas/', BuscarEtiquetasViewSet.as_view(), name='buscar-etiquetas'),
 
     path('login/', views.obtain_auth_token),
     path('explorar/', ExplorarViewSet.as_view(), name='explorar'),
