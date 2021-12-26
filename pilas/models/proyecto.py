@@ -8,6 +8,7 @@ from django.core.files import File
 
 class Proyecto(models.Model):
     hash = models.CharField(max_length=64, default="")
+    titulo = models.CharField(max_length=256, default="Sin título")
     creacion = models.DateTimeField(auto_now_add=True, null=True)
     ver_codigo = models.BooleanField(default=True)
     archivo = models.FileField(upload_to='proyectos/', default=None, null=True)
@@ -98,3 +99,16 @@ class Proyecto(models.Model):
         archivo = zipfile.ZipFile(self.archivo.path, 'r')
         contenido = archivo.read("proyecto.pilas")
         return contenido.decode("utf-8")
+
+    def imagen_url(self):
+        if self.imagen:
+            base_url = os.environ.get('BACKEND_URL')
+            return base_url + self.imagen.url
+        else:
+            return ""
+
+    def nombre_del_perfil(self):
+        if self.perfil:
+            return self.perfil.nombre
+        else:
+            return ""

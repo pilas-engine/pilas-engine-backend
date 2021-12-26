@@ -7,12 +7,14 @@ class ProyectoAdmin(admin.ModelAdmin):
     model = Proyecto
     list_display = (
             'id', 
-            'creacion', 
+            'titulo', 
             'imagen_tag', 
             'lista_de_tags', 
+            'perfil',
             'size', 
             'url', 
             'ver_codigo',
+            'creacion',
     )
     search_fields = (
             'hash', 

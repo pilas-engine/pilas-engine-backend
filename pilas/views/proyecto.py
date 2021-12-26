@@ -13,6 +13,7 @@ from rest_framework import viewsets
 from django.http import FileResponse
 from django.core.files import File
 from pilas.models.proyecto import Proyecto
+from pilas.models.tag import Tag
 from pilas.serializers.proyecto import ProyectoSerializer
 
 
@@ -39,6 +40,9 @@ def generar_archivo_desde_codigo_serializado(contenido):
 
     return temp_file_path
 
+def crear_u_obtener_tags_desde_una_lista(lista_de_tags):
+    return [Tag.objects.get_or_create(nombre=t)[0] for t in lista_de_tags]
+
 def subir(request):
 
     token = request.META.get('HTTP_AUTHORIZATION', None)
@@ -55,6 +59,8 @@ def subir(request):
     cantidad_de_partes = datos.get("cantidad_de_partes", 1)
     numero_de_parte = datos.get("numero_de_parte", 1)
     imagen_en_base64 = datos.get("imagen_en_base64", None)
+    tags = datos.get("tags", [])
+    titulo = datos.get("titulo", "Sin título")
 
     if "codigo_serializado" not in datos:
         return JsonResponse({
@@ -66,7 +72,8 @@ def subir(request):
         # Si el proyecto llega en partes, se asegura de crear
         # el proyecto cuando llega la primer parte.
         if numero_de_parte == 0:
-            proyecto = Proyecto.objects.create(ver_codigo=True, perfil=perfil)
+            proyecto = Proyecto.objects.create(titulo=titulo, ver_codigo=True, perfil=perfil)
+            proyecto.tags.set(crear_u_obtener_tags_desde_una_lista(tags))
         else:
             proyecto = Proyecto.objects.get(hash=datos['hash'])
 
@@ -75,7 +82,8 @@ def subir(request):
         proyecto.actualizar_parte(datos["codigo_serializado"], cantidad_de_partes, numero_de_parte)
         proyecto.save()
     else:
-        proyecto = Proyecto.objects.create(ver_codigo=True, perfil=perfil)
+        proyecto = Proyecto.objects.create(titulo=titulo, ver_codigo=True, perfil=perfil)
+        proyecto.tags.set(crear_u_obtener_tags_desde_una_lista(tags))
 
         ruta = generar_archivo_desde_codigo_serializado(datos["codigo_serializado"])
         proyecto.archivo.save(f"{proyecto.hash}.zip", File(open(ruta, 'rb')))

@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from rest_framework.authtoken import views
 
 from pilas.views.perfil import PerfilViewSet
-from pilas.views.sesion import SesionViewSet
+from pilas.views.explorar import ExplorarViewSet
 from pilas.views.logout import LogOutViewSet
 from pilas.views.perfil import perfiles_crear_usuario
 from pilas.views.perfil import perfiles_mi_perfil
@@ -29,7 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('login/', views.obtain_auth_token),
-    path('sesion/', SesionViewSet.as_view(), name='sesion'),
+    path('explorar/', ExplorarViewSet.as_view(), name='explorar'),
     path('logout/', LogOutViewSet.as_view(), name='logout'),
 
 ] + static("proyecto", document_root=ROOT)

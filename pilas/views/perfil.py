@@ -23,7 +23,8 @@ class PerfilViewSet(viewsets.ModelViewSet):
 def perfiles_crear_usuario(request):
     datos = json.loads(request.body)
 
-    existe = User.objects.filter(username=datos["usuario"]).count() > 0
+    usuarios_con_ese_nombre = User.objects.filter(username=datos["usuario"])
+    existe = usuarios_con_ese_nombre.count() > 0
 
     if existe:
         return JsonResponse({
@@ -37,8 +38,11 @@ def perfiles_crear_usuario(request):
     usuario.email = datos["email"]
     usuario.save()
 
+    token, created = Token.objects.get_or_create(user=usuario)
+
     return JsonResponse({
         "ok": True,
+        "token": token.key,
     }, status=200)
 
 
