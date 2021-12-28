@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from pilas.models.proyecto import Proyecto
 from pilas.tests.utilidades import autenticar
 from pilas.models.perfil import Perfil
 
@@ -47,6 +48,33 @@ class APIPerfilTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['nombre'], 'hugo')
 
+    def test_puede_consultar_los_juegos_de_un_usuario(self):
+        perfil = self.crear_usuario()
+
+        auth_data = {
+            'username': 'hugo',
+            'password': 'dev123'
+        }
+
+        response = self.client.post('/login/', auth_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        token = response.data["token"]
+
+        # En total se hacen 3 proyectos, pero solo dos son del
+        # perfil autenticado.
+        Proyecto.objects.create(hash="1")
+        Proyecto.objects.create(hash="2", perfil=perfil)
+        Proyecto.objects.create(hash="3", perfil=perfil)
+
+        # Si consulta mi-perfil con un token retorna los datos
+        # del usuario
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = self.client.get(f"/perfiles/mis-juegos")
+
+        self.assertEqual(response.data['total'], 2)
+
+
     def test_falla_si_el_password_es_incorrecto(self):
         self.crear_usuario()
         auth_data = {
@@ -73,8 +101,6 @@ class APIPerfilTests(APITestCase):
 
         response = self.client.post('/perfiles/crear-usuario', datos, format='json')
         self.assertEqual(response.status_code, 200)
-
-
 
         # Una vez creado el usuario se asegura de poder ingresar.
 

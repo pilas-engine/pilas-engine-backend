@@ -64,3 +64,28 @@ def perfiles_mi_perfil(request):
         }, 401)
 
 
+
+@api_view(('GET',))
+@renderer_classes((JSONRenderer, ))
+def perfiles_mis_juegos(request):
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    from pilas.views.explorar import obtener_proyectos_serializados
+
+    if token:
+        key = token.split(" ")[1]
+        user = Token.objects.get(key=key).user
+
+        numero_de_pagina = request.GET.get("pagina", 1)
+        etiqueta = request.GET.get("etiqueta", None)
+
+        queryset = user.perfil.proyectos.prefetch_related("tags").all()
+
+        data = obtener_proyectos_serializados(queryset, etiqueta, numero_de_pagina)
+
+        return Response(data)
+    else:
+        return Response({
+            "error": "Debe especificar el token de acceso"
+        }, 401)
+
+

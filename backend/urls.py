@@ -12,6 +12,7 @@ from pilas.views.logout import LogOutViewSet
 from pilas.views.buscar_etiquetas import BuscarEtiquetasViewSet
 from pilas.views.perfil import perfiles_crear_usuario
 from pilas.views.perfil import perfiles_mi_perfil
+from pilas.views.perfil import perfiles_mis_juegos
 from pilas.views.home import home
 from pilas.views.proyecto import subir, obtener
 
@@ -26,6 +27,7 @@ urlpatterns = [
     path('proyecto/obtener/<proyecto_id>', csrf_exempt(obtener), name='proyecto.obtener'),
     path('perfiles/crear-usuario', csrf_exempt(perfiles_crear_usuario), name='perfiles.crearusuario'),
     path('perfiles/mi-perfil', perfiles_mi_perfil, name='perfiles.mi_perfil'),
+    path('perfiles/mis-juegos', perfiles_mis_juegos, name='perfiles.mis_juegos'),
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
     path('buscar-etiquetas/', BuscarEtiquetasViewSet.as_view(), name='buscar-etiquetas'),
