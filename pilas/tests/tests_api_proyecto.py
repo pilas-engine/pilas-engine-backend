@@ -111,11 +111,6 @@ class APIProyectoTests(APITestCase):
         self.assertEqual(response.data["proyectos_agrupados"][1]["perfil"], "Sin autenticar")
         self.assertEqual(len(response.data["proyectos_agrupados"][1]["proyectos"]), 10)
 
-        #self.assertEqual(response.data["total"], 12)
-        #self.assertEqual(response.data["paginas"], 1)
-        #self.assertEqual(response.data["pagina"], 1)
-        print(response.data)
-
     def test_puede_filtrar_proyectos_con_etiquetas(self):
         codigo = CODIGO
 
