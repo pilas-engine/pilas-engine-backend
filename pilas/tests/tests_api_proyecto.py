@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from pilas.models.perfil import Perfil
 from fixture import CODIGO
 from pilas.models.proyecto import Proyecto
 from pilas.models.tag import Tag
@@ -81,6 +82,39 @@ class APIProyectoTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["proyectos"]), 8)
 
+    def test_puede_obtener_proyectos_agrupados_con_etiquetas(self):
+        perfil = Perfil.crear_con_usuario("hugo", "hugo")
+        tag = Tag.objects.create(nombre="club-de-chicas-programadoras")
+
+        # 10 proyectos sin usuario.
+        for x in range(10):
+            p = Proyecto.objects.create(hash="123")
+            p.tags.set([tag])
+
+        # 2 proyectos del usuario autenticado.
+        for x in range(10):
+            p = Proyecto.objects.create(hash="123", perfil=perfil)
+            p.tags.set([tag])
+
+        # 3 proyectos no tienen tag, no se tienen que mostrar.
+        for x in range(3):
+            Proyecto.objects.create(hash="123")
+
+        response = self.client.get("/explorar/?pagina=1&etiqueta=club-de-chicas-programadoras&mostrar_recientes_agrupados=true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["proyectos_agrupados"]), 2)
+
+        self.assertEqual(response.data["proyectos_agrupados"][0]["perfil"], "hugo")
+        self.assertEqual(len(response.data["proyectos_agrupados"][0]["proyectos"]), 10)
+
+        self.assertEqual(response.data["proyectos_agrupados"][1]["perfil"], "Sin autenticar")
+        self.assertEqual(len(response.data["proyectos_agrupados"][1]["proyectos"]), 10)
+
+        #self.assertEqual(response.data["total"], 12)
+        #self.assertEqual(response.data["paginas"], 1)
+        #self.assertEqual(response.data["pagina"], 1)
+        print(response.data)
 
     def test_puede_filtrar_proyectos_con_etiquetas(self):
         codigo = CODIGO
