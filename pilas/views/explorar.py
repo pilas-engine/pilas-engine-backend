@@ -2,7 +2,6 @@ from django.core.paginator import Paginator
 from rest_framework.authtoken.models import Token
 import itertools
 
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -26,7 +25,8 @@ class ExplorarViewSet(APIView):
             token = request.META.get('HTTP_AUTHORIZATION', None)
 
             if not token:
-                return Response({"error": "Debe especificar token de usuario"}, 410)
+                return Response({"error": "Debe especificar token de usuario"},
+                                410)
 
             key = token.split(" ")[1]
             user = Token.objects.get(key=key).user
@@ -68,15 +68,18 @@ class ExplorarViewSet(APIView):
                 } for usuario, proyectos_del_usuario in resultado
         ]
 
+
 def serializar_un_proyecto(proyecto):
     return {
         "hash": proyecto.hash,
         "imagen_url": proyecto.imagen_url(),
         "titulo": proyecto.titulo,
         "creacion": proyecto.creacion,
+        "eliminado": proyecto.eliminado,
         "perfil": proyecto.nombre_del_perfil(),
         "tags": [t.nombre for t in proyecto.tags.all()],
     }
+
 
 def obtener_proyectos_serializados(queryset, etiqueta, numero_de_pagina):
     paginator = Paginator(queryset, 10)

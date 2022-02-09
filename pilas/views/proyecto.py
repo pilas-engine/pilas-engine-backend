@@ -4,7 +4,6 @@ import os
 import zipfile
 import tempfile
 import json
-from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from django.utils._os import safe_join
@@ -25,12 +24,14 @@ class ProyectoViewSet(viewsets.ModelViewSet):
     search_fields = ['nombre']
     filter_fields = ['nombre']
 
+
 def servir_archivo(proyecto_id):
     archivo = safe_join("static", proyecto_id)
     content_type, encoding = mimetypes.guess_type(str(archivo))
     content_type = content_type or 'application/octet-stream'
     response = FileResponse(open(archivo, 'rb'), content_type=content_type)
     return response
+
 
 def generar_archivo_desde_codigo_serializado(contenido):
     _, temp_file_path = tempfile.mkstemp()
@@ -40,8 +41,10 @@ def generar_archivo_desde_codigo_serializado(contenido):
 
     return temp_file_path
 
+
 def crear_u_obtener_tags_desde_una_lista(lista_de_tags):
     return [Tag.objects.get_or_create(nombre=t)[0] for t in lista_de_tags]
+
 
 def subir(request):
 
@@ -107,6 +110,7 @@ def subir(request):
         "error": ""
     })
 
+
 def obtener(request, proyecto_id):
     proyecto = Proyecto.objects.get(hash=proyecto_id)
 
@@ -116,3 +120,62 @@ def obtener(request, proyecto_id):
         "ver_codigo": proyecto.ver_codigo,
         "error": ""
     })
+
+
+def eliminar(request, proyecto_id):
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    datos = json.loads(request.body)
+    hash = datos["hash"]
+
+    if token:
+        key = token.split(" ")[1]
+        user = Token.objects.get(key=key).user
+
+        proyecto = Proyecto.objects.get(hash=hash)
+
+        if proyecto.perfil.user == user:
+            proyecto.eliminado = True
+            proyecto.save()
+
+            return JsonResponse({
+                "ok": True,
+                "error": "El proyecto se ha marcado como eliminado"
+            })
+        else:
+            return JsonResponse({
+                "ok": False,
+                "error": "El proyecto no pertenece a tu usuario"
+            })
+
+
+    else:
+        return JsonResponse({
+            "ok": False,
+            "error": "Tienes que especificar el token de usuario"
+        })
+
+
+
+def perfiles_crear_usuario(request):
+
+    usuarios_con_ese_nombre = User.objects.filter(username=datos["usuario"])
+    existe = usuarios_con_ese_nombre.count() > 0
+
+    if existe:
+        return JsonResponse({
+            "ok": False,
+            "error": "El usuario ya existe",
+        }, status=500)
+
+    mi_perfil = Perfil.crear_con_usuario(, datos["usuario"])
+    usuario = mi_perfil.user
+    usuario.set_password(datos["password"])
+    usuario.email = datos["email"]
+    usuario.save()
+
+    token, created = Token.objects.get_or_create(user=usuario)
+
+    return JsonResponse({
+        "ok": True,
+        "token": token.key,
+    }, status=200)

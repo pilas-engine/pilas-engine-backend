@@ -15,6 +15,7 @@ class Proyecto(models.Model):
     imagen = models.FileField(upload_to='imagenes/', default=None, null=True)
     perfil = models.ForeignKey('Perfil', related_name="proyectos", default=None, null=True, on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag', related_name="proyectos")
+    eliminado = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-id']

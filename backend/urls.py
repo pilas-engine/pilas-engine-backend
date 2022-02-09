@@ -14,7 +14,7 @@ from pilas.views.perfil import perfiles_crear_usuario
 from pilas.views.perfil import perfiles_mi_perfil
 from pilas.views.perfil import perfiles_mis_juegos
 from pilas.views.home import home
-from pilas.views.proyecto import subir, obtener
+from pilas.views.proyecto import subir, obtener, eliminar
 
 ROOT = './static'
 router = routers.DefaultRouter(trailing_slash=False)
@@ -25,7 +25,15 @@ urlpatterns = [
     path('', home, name='home'),
     path('proyecto/subir', csrf_exempt(subir), name='proyecto.subir'),
     path('proyecto/obtener/<proyecto_id>', csrf_exempt(obtener), name='proyecto.obtener'),
-    path('perfiles/crear-usuario', csrf_exempt(perfiles_crear_usuario), name='perfiles.crearusuario'),
+
+    path('proyecto/eliminar_proyecto/',
+         csrf_exempt(eliminar),
+         name='proyecto.eliminar'),
+
+    path('perfiles/crear-usuario',
+         csrf_exempt(perfiles_crear_usuario),
+         name='perfiles.crearusuario'),
+
     path('perfiles/mi-perfil', perfiles_mi_perfil, name='perfiles.mi_perfil'),
     path('perfiles/mis-juegos', perfiles_mis_juegos, name='perfiles.mis_juegos'),
     path('api/', include(router.urls)),
