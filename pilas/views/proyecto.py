@@ -122,7 +122,7 @@ def obtener(request, proyecto_id):
     })
 
 
-def eliminar(request, proyecto_id):
+def eliminar(request):
     token = request.META.get('HTTP_AUTHORIZATION', None)
     datos = json.loads(request.body)
     hash = datos["hash"]
