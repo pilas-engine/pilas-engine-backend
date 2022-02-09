@@ -154,28 +154,3 @@ def eliminar(request, proyecto_id):
             "error": "Tienes que especificar el token de usuario"
         })
 
-
-
-def perfiles_crear_usuario(request):
-
-    usuarios_con_ese_nombre = User.objects.filter(username=datos["usuario"])
-    existe = usuarios_con_ese_nombre.count() > 0
-
-    if existe:
-        return JsonResponse({
-            "ok": False,
-            "error": "El usuario ya existe",
-        }, status=500)
-
-    mi_perfil = Perfil.crear_con_usuario(, datos["usuario"])
-    usuario = mi_perfil.user
-    usuario.set_password(datos["password"])
-    usuario.email = datos["email"]
-    usuario.save()
-
-    token, created = Token.objects.get_or_create(user=usuario)
-
-    return JsonResponse({
-        "ok": True,
-        "token": token.key,
-    }, status=200)
