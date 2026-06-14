@@ -111,12 +111,22 @@ def subir(request):
     })
 
 
+def obtener_tamano(request, proyecto_id):
+    proyecto = Proyecto.objects.get(hash=proyecto_id)
+    # Tamaño en bytes del proyecto
+    return JsonResponse({
+        "tamano": proyecto.archivo.size
+    })
+
+
+
 def obtener(request, proyecto_id):
     proyecto = Proyecto.objects.get(hash=proyecto_id)
+    contenido = proyecto.obtener_codigo_serializado()
 
     return JsonResponse({
         "ok": True,
-        "serializado": proyecto.obtener_codigo_serializado(),
+        "serializado": contenido,
         "ver_codigo": proyecto.ver_codigo,
         "error": ""
     })

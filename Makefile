@@ -24,7 +24,7 @@ comandos:
 	@echo "    ${G}ejecutar${N}                  Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}shell${N}                     Ejecuta un intérprete de python."
 	@echo "    ${G}deploy${N}                    Realiza un deploy de la aplicación."
-	@echo "    ${G}realizar_backup_desde_produccion${N}   "
+	@echo "    ${G}backup${N}                    Realizar un backup desde prod (imagenes, db, proyectos)"
 	@echo "    ${G}cargar_ultimo_dump_localmente${N}"
 	@echo ""
 	@echo ""
@@ -58,8 +58,7 @@ ejecutar:
 shell:
 	dotenv run -- python manage.py shell
 
-
-realizar_backup_desde_produccion:
+backup:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
 	@ssh dokku@pilas-engine.com.ar postgres:export pilas-engine-backend > ${DB_NOMBRE_DEL_DUMP}
 	@rsync -vP "root@pilas-engine.com.ar:/var/lib/dokku/data/storage/pilas-engine-backend/imagenes/*" ./media_archivos_locales/imagenes/
