@@ -20,3 +20,15 @@ pip install -r requirements.txt
 make migrar
 make ejecutar
 ```
+
+Para hacer deploys, hay que ejecutar este comando  de configuración:
+
+```
+git remote add dokku dokku@pilas-engine.com.ar:nuevo-pilas-engine-backend
+```
+
+y luego ejecutar
+
+```
+make deploy
+```

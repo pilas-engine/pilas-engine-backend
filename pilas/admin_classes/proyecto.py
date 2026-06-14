@@ -26,10 +26,13 @@ class ProyectoAdmin(admin.ModelAdmin):
         return format_html(f"<a target='_blank' href='http://app.pilas-engine.com.ar/#/proyecto/{hash}'>ver</a>")
 
     def size(self, obj):
-        if obj.archivo:
-            s = obj.archivo.size / 1024 / 1024
-            return f"{s:.2f} MB"
-        else:
+        try:
+            if obj.archivo:
+                s = obj.archivo.size / 1024 / 1024
+                return f"{s:.2f} MB"
+            else:
+                return ""
+        except FileNotFoundError as e:
             return ""
 
     def imagen_tag(self, obj):
